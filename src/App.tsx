@@ -1,16 +1,27 @@
 import { useState } from 'react';
 import Ladybug from './components/Ladybug';
 import type { Direction } from './components/Ladybug';
+export interface LadybugState {
+  posX: number;
+  posY: number;
+  orientation: Direction;
+}
 
 const STEP_SIZE = 25;
 
 export const App = () => {
-  const [posX, setPosX] = useState<number>(100);
-  const [posY, setPosY] = useState<number>(100);
-  const [orientation, setOrientation] = useState<Direction>('right');
+  //const [posX, setPosX] = useState<number>(100);
+  //const [posY, setPosY] = useState<number>(100);
+  //const [orientation, setOrientation] = useState<Direction>('right');
+
+  const [ladybugState, setLadybugState] = useState<LadybugState>({
+    posX: 100,
+    posY: 100,
+    orientation: 'right',
+  });
 
   const handleKeyUp = ({ code }:React.KeyboardEvent<HTMLDivElement>) => {
-    if (code === 'ArrowUp') {
+    /*if (code === 'ArrowUp') {
       setOrientation('up');
       setPosX(posX - STEP_SIZE);
     } else if (code === 'ArrowLeft') {
@@ -22,7 +33,36 @@ export const App = () => {
     } else if (code === 'ArrowDown') {
       setOrientation('down');
       setPosX(posX + STEP_SIZE);
-    }
+    }*/
+    setLadybugState((ladybugState) => {
+      if (code === 'ArrowUp') {
+        return {
+          ...ladybugState,
+          orientation: 'up',
+          posY: ladybugState.posY - STEP_SIZE,
+        };
+      } else if (code === 'ArrowLeft') {
+        return {
+          ...ladybugState,
+          orientation: 'left',
+          posX: ladybugState.posX - STEP_SIZE,
+        };
+      } else if (code === 'ArrowRight') {
+        return {
+          ...ladybugState,
+          orientation: 'right',
+          posX: ladybugState.posX + STEP_SIZE,
+        };
+      } else if (code === 'ArrowDown') {
+        return {
+          ...ladybugState,
+          orientation: 'down',
+          posY: ladybugState.posY + STEP_SIZE,
+        };
+      } else {
+        return ladybugState;
+      }
+    })
   };
 
   return (
@@ -32,7 +72,7 @@ export const App = () => {
       onKeyDown={handleKeyUp}
     >
       <header>Kliknutím kamkoliv začneš hru</header>
-      <Ladybug posX={posX} posY={posY} orientation={orientation} />
+      <Ladybug state={ladybugState} />
     </div>
   );
 };
